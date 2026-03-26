@@ -7,7 +7,7 @@ Per effettuarle è sufficiente osservare i log e i dati generati
 ### tempo di Generazione
   - considerando la generazione **sul server** di $20*10^6$ righe stampate (con stampa ogni `mis_every`=10), il tempo necessario è circa 30 min (non sembra dipendere in modo significativo da beta (e forse non ci dipende minimamente)):
   $10^6$ righe <--> 9 $s$
-- considerando generazione sul **computer di Andrea** modalità performance, $1*10^6$ righe stampate (stampa ogni `mis_every`= 10), il tempo necessario è stato 55 secondi:
+- considerando generazione sul **computer** modalità performance, $1*10^6$ righe stampate (stampa ogni `mis_every`= 10), il tempo necessario è stato 55 secondi:
   $10^6$ campionamenti <--> 5.5 $s$
 
 - INPUT: file dati `~/generazione_mod3/Nt40/beta#.#.txt`,
