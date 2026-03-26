@@ -1,20 +1,10 @@
-[[Relazione (modIII)]]
-
-[[codice generazione Bonati]]
-	- [[spiegazione struttura funzione Node e init_conf (chat-gpt)]]
-[[codice analisi bosoni Bonati]]
-[[codice analisi fermioni bonati]]
-
-[[Struttura generale]]
-[[Generazione dati (modIII)]]
-[[Analisi dati (modIII)]]
-
-# stime quantitative 
+# File di generazione dati
+## stime quantitative 
 Per effettuarle è sufficiente osservare i log e i dati generati
-## spazio occupato dalla Generazione
+### spazio occupato dalla Generazione
   considerando la scrittura di 5 colonne di dati con 6 cifre dopo la virgola (per le prime 4) e la 5 colonna 1/0, si ottiene:
   $10^6$ righe <--> 39.1 Mb
-## tempo di Generazione
+### tempo di Generazione
   - considerando la generazione **sul server** di $20*10^6$ righe stampate (con stampa ogni `mis_every`=10), il tempo necessario è circa 30 min (non sembra dipendere in modo significativo da beta (e forse non ci dipende minimamente)):
   $10^6$ righe <--> 9 $s$
 - considerando generazione sul **computer di Andrea** modalità performance, $1*10^6$ righe stampate (stampa ogni `mis_every`= 10), il tempo necessario è stato 55 secondi:
