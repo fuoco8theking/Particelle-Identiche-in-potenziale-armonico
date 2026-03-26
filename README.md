@@ -1,64 +1,39 @@
-## File Analisi Dati 
+[[Relazione (modIII)]]
 
-<!--toc:start-->
-  - [File Analisi Dati](#file-analisi-dati)
-    - [Come utilizzare il programma](#come-utilizzare-il-programma)
-- [Struttura salvataggio dati analisi](#struttura-salvataggio-dati-analisi)
-    - [Termalizzazione](#termalizzazione)
-    - [Errore in funzione di k](#errore-in-funzione-di-k)
-    - [Iterazioni](#iterazioni)
-    - [Questioni aperte analisi dati](#questioni-aperte-analisi-dati)
-<!--toc:end-->
+[[codice generazione Bonati]]
+	- [[spiegazione struttura funzione Node e init_conf (chat-gpt)]]
+[[codice analisi bosoni Bonati]]
+[[codice analisi fermioni bonati]]
 
-Nella nuova versione, analisi dati esporta un singolo file di testo per ogni L, in formato:
-`      // "# beta[0]   e[1]  sigma_e[2]   m[3]  sigma_m[4]  susc[5] sigma_susc[6]
-      // cu[7] sigma_cu[8] cal[9] sigma_cal[10]
-`
+[[Struttura generale]]
+[[Generazione dati (modIII)]]
+[[Analisi dati (modIII)]]
 
-### Come utilizzare il programma
-- Da terminale in cartella Progmod1 eseguire `./analisi.sh    L   term    k   root-file-import    root-file-export  errore_k  b_errore_k`
-  - `L`: lunghezza lati del reticolo quadrato 
-  - `term`: dati iniziali da saltare, di "termalizzazione" (consultare [[#Termalizzazione]])
-  - `k`: lunghezza blocco nel jackknife (consultare [[#Errore in funzione di k]])
-  - `root-file-import`: ATTENZIONE: bisogna riportare la cartella madre in cui verranno esportati i file:
-    esempio: voglio che i file analizzati siano: `~/generazione_mod1/L40/n#.txt`, dunque inserisco: `~/analisi_mod1` (senza nemmeno `/` finale) (differisce dal caso del modulo III)
-  - root-file-export: analogo al caso di sopra:
-    esempio: voglio che il file venga salvato in:  `~/analisi_mod1/L40.txt`, dunque inserisco: `~/analisi_mod1`
-  - `errore_k`: boolean:
-    - `0`: analisi dati normale
-    - `1` analisi dati per errore in funzione di k
-  - `b_errore_k`: scegliere quale file analizzare
-    esempio: inserisco 10: il file analizzato sarà `n10.txt`
+# stime quantitative 
+Per effettuarle è sufficiente osservare i log e i dati generati
+## spazio occupato dalla Generazione
+  considerando la scrittura di 5 colonne di dati con 6 cifre dopo la virgola (per le prime 4) e la 5 colonna 1/0, si ottiene:
+  $10^6$ righe <--> 39.1 Mb
+## tempo di Generazione
+  - considerando la generazione **sul server** di $20*10^6$ righe stampate (con stampa ogni `mis_every`=10), il tempo necessario è circa 30 min (non sembra dipendere in modo significativo da beta (e forse non ci dipende minimamente)):
+  $10^6$ righe <--> 9 $s$
+- considerando generazione sul **computer di Andrea** modalità performance, $1*10^6$ righe stampate (stampa ogni `mis_every`= 10), il tempo necessario è stato 55 secondi:
+  $10^6$ campionamenti <--> 5.5 $s$
 
-Nel caso di problemi in esecuzione, consultare la seguente sezione: [[#Questioni aperte analisi dati]]
+- INPUT: file dati `~/generazione_mod3/Nt40/beta#.#.txt`,
+contenente `iterazioni` righe di `x1` `x1_2` `x2` `x2_2` `twisted`
+- OUTPUT: file dati `~/analisi_mod3/Nt#.txt`, contenente una riga di: `beta[0]   x1[1]  sigma_x1[2]   x2[3]  sigma_x2[4]  r_2[5] sigma_r_2[6] segno[7] sigma_segno[8]  distanza[9] sigma_distanza[10]   energia_f[11]   sigma_energia_f[12]`
 
-# Struttura salvataggio dati analisi
+# struttura del file di Analisi
 
-
-La struttura è stata resa simile al caso del modIII, la differenza principale è che qua il singolo file itera direttamente su tutti i beta. 
-Il file può essere salvato nella directory che si preferisce (vedere [[[#Come utilizzare il programma]]).
-I dati vengono esportati come file di testo della forma `L#.txt`, all'interno sono disposti in colonne come segue:
-```
-# beta[0]   e[1]  sigma_e[2]   m[3]  sigma_m[4]  susc[5] sigma_susc[6] cu[7] sigma_cu[8] cal[9] sigma_cal[10]
-```
-
-### Termalizzazione
-Implementata in modo che sia possibile decidere numero di righe da saltare direttamente da terminale.
-Per vedere quante righe è opportuno saltare, andare nella cartella dei file ad L fissato che si vuole analizzare e prendere l'ultimo file creato (quello con beta più alta). Vedere in che zona si "stabilizzano" energia e magnetizzazione (scegliendo una riga all'inizio del "plateau").
-- Esempio pratico per capire quante righe saltare (da eseguire all'interno della cartella con L desiderato (in `generazione_dati/L#` ), selezionando # n a piacere):
-```
-	gnuplot  
-	plot "n10.txt" skip 1 using 0:1
-```
-
-### Errore in funzione di k 
-Per plottare:
-`
-Per il plot fatto bene c'è il programma pyton: `plot_k.py`
-Per eseguire un plot veloce con gnuplot dal server, eseguire (dopo aver aperto `gnuplot`):
-```
-plot 'L10.txt' using ($0*10):3 with lines
-```
-- ATTENZIONE: con gnuplot le colonne iniziano da `1`, la `0` rappresenta l'indice di riga
-- `*1` indica che nella generazione di `errore_k` è stato scelto `k` = 1, scegliere a seconda di errore_k 
-- `:3` = sigma_e, `:5` = sigma_m, `:7` = sigma_susc, `:9` = sigma_cumulante, `:11` = sigma_calore_spec
+#### long int conta_righe(const char *nomefile)
+  Conta le righe del file di testo passato a funzione
+#### double estrai_beta_da_file(const char *datafile)
+  Estrae il valore di beta dal titolo del file di testo passato a funzione "cercando" nel titolo tra `beta` e `.txt`
+#### void input_dati(char *datafile, long int term, long int sample, double **array)
+  Importa i dati dal file di testo, tenendo conto del fatto che la prima riga è il titolo e saltando le righe di termalizzazione
+#### void print_array(double **array, long int righe, long int colonne) 
+  Stampa sul terminale l'array passato a funzione (debug)
+#### void jackknife(long int k, long int h, double **jack_array, double **array) 
+  Crea `h` sample da cui estrarre media ed errore delle quantità: `x1` `x2` `energia_b` `segno` `distanza_b` `energia_f`
+#### int main(int argc, char **argv) 
